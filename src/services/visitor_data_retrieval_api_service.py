@@ -1,5 +1,10 @@
 # Implementation for SCRUM-417: Visitor Data Retrieval API
 
+# JWT Authentication middleware
+from .authentication_middleware import jwt_required
+
+@jwt_required
+
 def execute_visitor_data_retrieval_api(payload=None):
     """The API should fetch visitor data based on provided visitor ID"""
     print('Executing SCRUM-417: Visitor Data Retrieval API')

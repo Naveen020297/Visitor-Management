@@ -1,5 +1,10 @@
 # Implementation for SCRUM-411: Visitor Registration API
 
+# Import the authentication middleware
+from src.services.authentication_middleware import require_authentication
+
+@require_authentication  # Apply authentication decorator
+
 def execute_visitor_registration_api(payload=None):
     """The API should create a new visitor and return the created record"""
     print('Executing SCRUM-411: Visitor Registration API')
