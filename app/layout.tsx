@@ -1,5 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { AuthProvider } from '@/context/auth';
 import "./globals.css"
 import "./styles/main.scss"
 
@@ -16,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   )
 }
