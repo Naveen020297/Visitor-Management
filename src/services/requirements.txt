@@ -1,0 +1,4 @@
+# Requirements for the project
+
+# Add JWT library for authentication
+pyjwt==2.4.0
