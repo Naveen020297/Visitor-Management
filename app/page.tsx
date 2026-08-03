@@ -6,6 +6,9 @@ import { SecurityDashboard } from "@/components/security-dashboard"
 import { VisitorHistory } from "@/components/visitor-history"
 import { Shield, Tablet, History } from "lucide-react"
 
+const jwtToken = localStorage.getItem('token');
+const headers = { Authorization: `Bearer ${jwtToken}` };
+
 export default function VisitorManagementSystem() {
   const [activeTab, setActiveTab] = useState("tablet")
 
@@ -71,14 +74,14 @@ export default function VisitorManagementSystem() {
             </ul>
 
             <div className="tab-content">
-              <div className={`tab-pane fade ${activeTab === "tablet" ? "show active" : ""}`}>
-                <TabletRegistration />
+              <div className={`tab-pane fade ${activeTab === "tablet" ? "show active" : ""}`}>  
+                <TabletRegistration headers={headers} />
               </div>
-              <div className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`}>
-                <SecurityDashboard />
+              <div className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`}>  
+                <SecurityDashboard headers={headers} />
               </div>
-              <div className={`tab-pane fade ${activeTab === "history" ? "show active" : ""}`}>
-                <VisitorHistory />
+              <div className={`tab-pane fade ${activeTab === "history" ? "show active" : ""}`}>  
+                <VisitorHistory headers={headers} />
               </div>
             </div>
           </div>
