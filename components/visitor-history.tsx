@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Search, Download, User, Calendar } from "lucide-react"
+import { VisitorDataTable } from "@/components/visitor-data-table"
 
 interface HistoryEntry {
   id: string
@@ -94,6 +95,19 @@ export function VisitorHistory() {
       entry.purpose.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
+  // Convert history data for the visitor data table
+  const visitorData = filteredHistory.map((entry) => ({
+    id: entry.id,
+    name: entry.name,
+    photo: entry.photo,
+    entryTime: entry.entryTime,
+    exitTime: entry.exitTime || "—",
+    invitedBy: entry.invitedBy,
+    purpose: entry.purpose,
+    status: entry.status,
+    date: entry.date,
+  }))
+
   return (
     <div className="visitor-history">
       {/* Header with Search and Export */}
@@ -119,14 +133,13 @@ export function VisitorHistory() {
               </div>
             </div>
             <button className="btn btn-outline-secondary">
-              <Download className="btn-icon me-2" />
-              Export
+              <Download className="btn-icon me-2" /></n              Export
             </button>
           </div>
         </div>
       </div>
 
-      {/* History Table */}
+      {/* History Table - Mobile Responsive */}                    
       <div className="card">
         <div className="card-header">
           <h5 className="card-title mb-0 d-flex align-items-center">
@@ -135,46 +148,7 @@ export function VisitorHistory() {
           </h5>
         </div>
         <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover mb-0">
-              <thead className="table-light">
-                <tr>
-                  <th className="border-0">Guest</th>
-                  <th className="border-0">Entry Time</th>
-                  <th className="border-0">Exit Time</th>
-                  <th className="border-0">Invited By</th>
-                  <th className="border-0">Status</th>
-                  <th className="border-0">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredHistory.map((entry) => (
-                  <tr key={entry.id}>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <div className="history-avatar me-3">
-                          <User className="avatar-icon" />
-                        </div>
-                        <div>
-                          <div className="history-name">{entry.name}</div>
-                          <div className="history-purpose">{entry.purpose}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="history-time">{entry.entryTime}</td>
-                    <td className="history-time">{entry.exitTime || <span className="text-muted">—</span>}</td>
-                    <td className="history-invited">{entry.invitedBy}</td>
-                    <td>
-                      <span className={`badge ${entry.status === "checked-in" ? "badge-primary" : "badge-secondary"}`}>
-                        {entry.status === "checked-in" ? "Checked In" : "Checked Out"}
-                      </span>
-                    </td>
-                    <td className="history-date">{entry.date}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <VisitorDataTable visitors={visitorData} />
         </div>
       </div>
     </div>
