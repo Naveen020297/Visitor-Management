@@ -1,0 +1,6 @@
+# Unit tests for SCRUM-615
+from src.services.task003_create_dashboard_configuration_files_dashboardconfigts_pageregistryts_permissionmatrixts_service import execute_task003_create_dashboard_configuration_files_dashboardconfigts_pageregistryts_permissionmatrixts
+
+def test_execute_task003_create_dashboard_configuration_files_dashboardconfigts_pageregistryts_permissionmatrixts():
+    res = execute_task003_create_dashboard_configuration_files_dashboardconfigts_pageregistryts_permissionmatrixts()
+    assert res['status'] == 'success'
