@@ -4,7 +4,8 @@ import { useState } from "react"
 import { TabletRegistration } from "@/components/tablet-registration"
 import { SecurityDashboard } from "@/components/security-dashboard"
 import { VisitorHistory } from "@/components/visitor-history"
-import { Shield, Tablet, History } from "lucide-react"
+import { UsersDashboard } from "@/components/users-dashboard"
+import { Shield, Tablet, History, Users } from "lucide-react"
 
 export default function VisitorManagementSystem() {
   const [activeTab, setActiveTab] = useState("tablet")
@@ -68,17 +69,31 @@ export default function VisitorManagementSystem() {
                   Visitor History
                 </button>
               </li>
+              <li className="nav-item" role="presentation">
+                <button
+                  className={`nav-link ${activeTab === "users" ? "active" : ""}`}
+                  onClick={() => setActiveTab("users")}
+                  type="button"
+                  role="tab"
+                >
+                  <Users className="nav-icon me-2" />
+                  Users
+                </button>
+              </li>
             </ul>
 
             <div className="tab-content">
-              <div className={`tab-pane fade ${activeTab === "tablet" ? "show active" : ""}`}>
+              <div className={`tab-pane fade ${activeTab === "tablet" ? "show active" : ""}">
                 <TabletRegistration />
               </div>
-              <div className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`}>
+              <div className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}">
                 <SecurityDashboard />
               </div>
-              <div className={`tab-pane fade ${activeTab === "history" ? "show active" : ""}`}>
+              <div className={`tab-pane fade ${activeTab === "history" ? "show active" : ""}">
                 <VisitorHistory />
+              </div>
+              <div className={`tab-pane fade ${activeTab === "users" ? "show active" : ""}">
+                <UsersDashboard />
               </div>
             </div>
           </div>
