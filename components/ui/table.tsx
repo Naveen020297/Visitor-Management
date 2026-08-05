@@ -20,7 +20,7 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
+  <thead ref={ref} className={cn("[_tr]:border-b", className)} {...props} />
 ))
 TableHeader.displayName = "TableHeader"
 
@@ -30,7 +30,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={cn("[&_tr:last-child]:border-0", className)}
+    className={cn("[_tr:last-child]:border-0", className)}
     {...props}
   />
 ))
@@ -66,19 +66,59 @@ const TableRow = React.forwardRef<
 ))
 TableRow.displayName = "TableRow"
 
+export type SortDirection = "asc" | "desc" | "none"
+
+export type TableHeadProps = React.ThHTMLAttributes<HTMLTableCellElement> & {
+  sortable?: boolean
+  sortDirection?: SortDirection
+  onSort?: (direction: SortDirection) => void
+}
+
 const TableHead = React.forwardRef<
   HTMLTableCellElement,
-  React.ThHTMLAttributes<HTMLTableCellElement>
->(({ className, ...props }, ref) => (
-  <th
-    ref={ref}
-    className={cn(
-      "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
-      className
-    )}
-    {...props}
-  />
-))
+  TableHeadProps
+>(({ className, sortable, sortDirection = "none", onSort, ...props }, ref) => {
+  const handleSort = () => {
+    if (sortable && onSort) {
+      let newDirection: SortDirection = "asc"
+      if (sortDirection === "asc") {
+        newDirection = "desc"
+      } else if (sortDirection === "desc") {
+        newDirection = "none"
+      }
+      onSort(newDirection)
+    }
+  }
+
+  const getSortIcon = () => {
+    if (sortDirection === "asc") {
+      return "▲"
+    }
+    if (sortDirection === "desc") {
+      return "▼"
+    }
+    return sortable ? "⇅" : ""
+  }
+
+  return (
+    <th
+      ref={ref}
+      onClick={handleSort}
+      className={cn(
+        "h-12 px-4 text-left align-middle font-medium text-muted-foreground transition-colors cursor-pointer select-none [&:has([role=checkbox])]:pr-0",
+        sortable && "hover:bg-accent hover:text-foreground",n        className
+      )}
+      {...props}
+    >n      <div className="flex items-center gap-1">
+      {props.children}
+      {sortable && (
+        <span className="text-xs font-semibold">n          {getSortIcon()}
+        </span>
+      )}
+      </div>
+    </th>
+  )
+})
 TableHead.displayName = "TableHead"
 
 const TableCell = React.forwardRef<
@@ -111,7 +151,6 @@ export {
   TableBody,
   TableFooter,
   TableHead,
-  TableRow,
   TableCell,
   TableCaption,
 }
