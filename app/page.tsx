@@ -9,6 +9,22 @@ import { Shield, Tablet, History } from "lucide-react"
 export default function VisitorManagementSystem() {
   const [activeTab, setActiveTab] = useState("tablet")
 
+  const handleKeyDown = (e: React.KeyboardEvent, tabId: string) => {
+    if (e.key === "ArrowRight") {
+      e.preventDefault()
+      const tabs = ["tablet", "dashboard", "history"]
+      const currentIndex = tabs.indexOf(activeTab)
+      const nextIndex = (currentIndex + 1) % tabs.length
+      setActiveTab(tabs[nextIndex])
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault()
+      const tabs = ["tablet", "dashboard", "history"]
+      const currentIndex = tabs.indexOf(activeTab)
+      const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length
+      setActiveTab(tabs[prevIndex])
+    }
+  }
+
   return (
     <div className="visitor-management-system">
       <header className="main-header">
@@ -37,10 +53,13 @@ export default function VisitorManagementSystem() {
             <ul className="nav nav-pills nav-fill custom-nav mb-4" role="tablist">
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${activeTab === "tablet" ? "active" : ""}`}
+                  className={`nav-link ${activeTab === "tablet" ? "active" : ""}`
                   onClick={() => setActiveTab("tablet")}
                   type="button"
                   role="tab"
+                  aria-selected={activeTab === "tablet"}
+                  aria-controls="tablet-panel"
+                  onKeyDown={(e) => handleKeyDown(e, "tablet")}
                 >
                   <Tablet className="nav-icon me-2" />
                   Tablet Registration
@@ -48,10 +67,13 @@ export default function VisitorManagementSystem() {
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${activeTab === "dashboard" ? "active" : ""}`}
+                  className={`nav-link ${activeTab === "dashboard" ? "active" : ""}`
                   onClick={() => setActiveTab("dashboard")}
                   type="button"
                   role="tab"
+                  aria-selected={activeTab === "dashboard"}
+                  aria-controls="dashboard-panel"
+                  onKeyDown={(e) => handleKeyDown(e, "dashboard")}
                 >
                   <Shield className="nav-icon me-2" />
                   Security Dashboard
@@ -59,10 +81,13 @@ export default function VisitorManagementSystem() {
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${activeTab === "history" ? "active" : ""}`}
+                  className={`nav-link ${activeTab === "history" ? "active" : ""}`
                   onClick={() => setActiveTab("history")}
                   type="button"
                   role="tab"
+                  aria-selected={activeTab === "history"}
+                  aria-controls="history-panel"
+                  onKeyDown={(e) => handleKeyDown(e, "history")}
                 >
                   <History className="nav-icon me-2" />
                   Visitor History
@@ -70,14 +95,32 @@ export default function VisitorManagementSystem() {
               </li>
             </ul>
 
-            <div className="tab-content">
-              <div className={`tab-pane fade ${activeTab === "tablet" ? "show active" : ""}`}>
+            <div className="tab-content" role="tablist">
+              <div
+                className={`tab-pane fade ${activeTab === "tablet" ? "show active" : ""}`}
+                id="tablet-panel"
+                role="tabpanel"
+                aria-labelledby="tablet-tab"
+                aria-hidden={activeTab !== "tablet"}
+              >
                 <TabletRegistration />
               </div>
-              <div className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`}>
+              <div
+                className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`}
+                id="dashboard-panel"
+                role="tabpanel"
+                aria-labelledby="dashboard-tab"
+                aria-hidden={activeTab !== "dashboard"}
+              >
                 <SecurityDashboard />
               </div>
-              <div className={`tab-pane fade ${activeTab === "history" ? "show active" : ""}`}>
+              <div
+                className={`tab-pane fade ${activeTab === "history" ? "show active" : ""}`}
+                id="history-panel"
+                role="tabpanel"
+                aria-labelledby="history-tab"
+                aria-hidden={activeTab !== "history"}
+              >
                 <VisitorHistory />
               </div>
             </div>

@@ -78,17 +78,17 @@ export function SecurityDashboard() {
 
   return (
     <div className="security-dashboard">
-      {/* Stats Cards */}
-      <div className="row mb-4">
+      {/* Stats Cards - aria-live region for dynamic updates */}
+      <div className="row mb-4" role="region" aria-label="Visitor statistics dashboard">
         <div className="col-md-4 mb-3">
           <div className="card stat-card stat-card-primary">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
                 <div>
                   <p className="stat-label">Currently On Campus</p>
-                  <p className="stat-value text-primary">{checkedInCount}</p>
+                  <p className="stat-value text-primary"{aria-live: "polite" aria-atomic: "true"}>{checkedInCount}</p>
                 </div>
-                <Users className="stat-icon text-primary" />
+                <Users className="stat-icon text-primary" aria-hidden="true" />
               </div>
             </div>
           </div>
@@ -100,9 +100,9 @@ export function SecurityDashboard() {
               <div className="d-flex justify-content-between align-items-center">
                 <div>
                   <p className="stat-label">Total Visitors Today</p>
-                  <p className="stat-value">{totalToday}</p>
+                  <p className="stat-value"{aria-live: "polite" aria-atomic: "true"}>{totalToday}</p>
                 </div>
-                <Clock className="stat-icon" />
+                <Clock className="stat-icon" aria-hidden="true" />
               </div>
             </div>
           </div>
@@ -114,78 +114,106 @@ export function SecurityDashboard() {
               <div className="d-flex justify-content-between align-items-center">
                 <div>
                   <p className="stat-label">Security Status</p>
-                  <p className="stat-value-text text-success">All Clear</p>
+                  <p className="stat-value-text text-success"{aria-live: "polite" aria-atomic: "true"}>All Clear</p>
                 </div>
-                <AlertCircle className="stat-icon text-success" />
+                <AlertCircle className="stat-icon text-success" aria-hidden="true" />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Active Visitors */}
-      <div className="card">
+      {/* Active Visitors - aria-live region for visitor list updates */}
+      <div className="card" role="region" aria-label="Visitor activity table">
         <div className="card-header">
           <h3 className="card-title mb-0">Real-time Visitor Activity</h3>
         </div>
         <div className="card-body">
-          <div className="visitor-list">
-            {visitors.map((visitor) => (
-              <div key={visitor.id} className="visitor-item">
-                <div className="d-flex align-items-center">
-                  <div className="visitor-avatar-container me-3">
-                    <div className="visitor-avatar">
-                      <User className="avatar-icon" />
-                    </div>
-                    <div
-                      className={`status-indicator ${visitor.status === "checked-in" ? "status-active" : "status-inactive"}`}
-                    ></div>
-                  </div>
-
-                  <div className="visitor-info flex-grow-1">
-                    <h5 className="visitor-name mb-1">{visitor.name}</h5>
-                    <p className="visitor-meeting mb-0">Meeting: {visitor.whomToMeet}</p>
-                    <p className="visitor-time mb-0">Entry: {visitor.timeOfEntry}</p>
-                  </div>
-
-                  <div className="visitor-actions d-flex align-items-center">
-                    <span
-                      className={`badge status-badge ${visitor.status === "checked-in" ? "badge-primary" : "badge-secondary"} me-3`}
-                    >
-                      {visitor.status === "checked-in" ? "Checked In" : "Checked Out"}
-                    </span>
-
-                    <div className="btn-group">
-                      <button onClick={() => handlePrintPass(visitor)} className="btn btn-outline-primary btn-sm">
-                        <Printer className="btn-icon me-1" />
-                        Print Pass
-                      </button>
-
-                      {visitor.status === "checked-in" && (
-                        <button onClick={() => handleCheckOut(visitor.id)} className="btn btn-outline-secondary btn-sm">
-                          <LogOut className="btn-icon me-1" />
-                          Check Out
+          {/* Table container with aria-live for dynamic updates */}
+          <div className="table-responsive" role="table" aria-label="List of currently registered visitors">
+            <table className="table visitor-table" aria-describedby="visitorTableDesc">
+              <caption className="visually-hidden">Real-time Visitor Activity - Shows all visitors registered today with their status. Dynamic updates are announced.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Visitor</th>
+                  <th scope="col">Meeting With</th>
+                  <th scope="col">Entry Time</th>
+                  <th scope="col">Purpose</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody aria-live="polite" aria-atomic="true">
+                {visitors.map((visitor) => (
+                  <tr key={visitor.id}>                    <td className="align-middle">
+                      <div className="d-flex align-items-center">
+                        <div className="visitor-avatar-container me-2">
+                          <div className="visitor-avatar">
+                            <User className="avatar-icon" aria-hidden="true" />
+                          </div>
+                          <div
+                            className={`status-indicator ${visitor.status === "checked-in" ? "status-active" : "status-inactive"}`}
+                          ></div>
+                        </div>
+                        <span className="visitor-name fw-medium">{visitor.name}</span>
+                      </div>
+                    </td>
+                    <td className="align-middle">{visitor.whomToMeet}</td>
+                    <td className="align-middle">{visitor.timeOfEntry}</td>
+                    <td className="align-middle">{visitor.purpose}</td>
+                    <td className="align-middle">
+                      <span
+                        className={`badge status-badge ${visitor.status === "checked-in" ? "badge-primary" : "badge-secondary"}`
+                      >
+                        {visitor.status === "checked-in" ? "Checked In" : "Checked Out"}
+                      </span>
+                    </td>
+                    <td className="align-middle">
+                      <div className="btn-group">
+                        <button 
+                          onClick={() => handlePrintPass(visitor)}
+                          className="btn btn-outline-primary btn-sm"
+                          aria-label={`Print pass for ${visitor.name}`}
+                        >
+                          <Printer className="btn-icon me-1" aria-hidden="true" />
+                          Print Pass
                         </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+
+                        {visitor.status === "checked-in" && (
+                          <button 
+                            onClick={() => handleCheckOut(visitor.id)}
+                            className="btn btn-outline-secondary btn-sm"
+                            aria-label={`Check out ${visitor.name}`}
+                          >
+                            <LogOut className="btn-icon me-1" aria-hidden="true" />
+                            Check Out
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
 
       {/* Modal for Visitor Pass */}
       {showPassModal && selectedVisitor && (
-        <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <div className="modal fade show d-block" tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Visitor Pass</h5>
-                <button type="button" className="btn-close" onClick={() => setShowPassModal(false)}></button>
+                <h5 className="modal-title" id="modalTitle">Visitor Pass</h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={() => setShowPassModal(false)}
+                  aria-label="Close visitor pass"
+                ></button>
               </div>
-              <div className="modal-body">
+              <div className="modal-body" id="modalDesc">
                 <VisitorPass visitor={selectedVisitor} />
               </div>
             </div>
@@ -194,4 +222,17 @@ export function SecurityDashboard() {
       )}
     </div>
   )
+}
+
+/* Visually hidden class for screen reader only content */
+.vishually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
