@@ -2,7 +2,9 @@
 
 import { useState } from "react"
 import { VisitorPass } from "@/components/visitor-pass"
-import { Printer, LogOut, User, Clock, Users, AlertCircle } from "lucide-react"
+import { Printer, LogOut, User, Clock, Users, AlertCircle, FileDown, FileText } from "lucide-react"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 
 interface Visitor {
   id: string
@@ -76,6 +78,61 @@ export function SecurityDashboard() {
   const checkedInCount = visitors.filter((v) => v.status === "checked-in").length
   const totalToday = visitors.length
 
+  // Export utility functions
+  const exportAsCSV = () => {
+    if (visitors.length === 0) return
+    
+    const headers = ["Name", "Whom to Meet", "Time of Entry", "Status", "Purpose", "Mobile"]
+    const rows = visitors.map(v => [
+      v.name,
+      v.whomToMeet,
+      v.timeOfEntry,
+      v.status,
+      v.purpose,
+      v.mobile
+    ])
+    
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(cell => typeof cell === 'string' ? cell.replace(/"/g, '""') : cell)
+      .map(cell => `"${cell}"`)
+      .join(','))
+      .join('\n')
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.setAttribute('href', url)
+    link.setAttribute('download', `visitor-data-${new Date().toISOString().slice(0,10)}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const exportAsJSON = () => {
+    if (visitors.length === 0) return
+    
+    const data = visitors.map(v => ({
+      name: v.name,
+      whomToMeet: v.whomToMeet,
+      timeOfEntry: v.timeOfEntry,
+      status: v.status,
+      purpose: v.purpose,
+      mobile: v.mobile
+    }))
+    
+    const jsonContent = JSON.stringify(data, null, 2)
+    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.setAttribute('href', url)
+    link.setAttribute('download', `visitor-data-${new Date().toISOString().slice(0,10)}.json`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="security-dashboard">
       {/* Stats Cards */}
@@ -126,7 +183,29 @@ export function SecurityDashboard() {
       {/* Active Visitors */}
       <div className="card">
         <div className="card-header">
-          <h3 className="card-title mb-0">Real-time Visitor Activity</h3>
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h3 className="card-title mb-0">Real-time Visitor Activity</h3>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="d-flex align-items-center">
+                  <FileDown className="h-4 w-4 me-1" />
+                  Export
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={exportAsCSV}>
+                    <FileText className="h-4 w-4 me-2" />
+                    Export as CSV
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={exportAsJSON}>
+                    <FileDown className="h-4 w-4 me-2" />
+                    Export as JSON
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
         <div className="card-body">
           <div className="visitor-list">
