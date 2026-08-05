@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState } from "r"
 import { TabletRegistration } from "@/components/tablet-registration"
 import { SecurityDashboard } from "@/components/security-dashboard"
 import { VisitorHistory } from "@/components/visitor-history"
+import { VisitorTable } from "@/components/visitor-table"
 import { Shield, Tablet, History } from "lucide-react"
 
 export default function VisitorManagementSystem() {
@@ -37,7 +38,7 @@ export default function VisitorManagementSystem() {
             <ul className="nav nav-pills nav-fill custom-nav mb-4" role="tablist">
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${activeTab === "tablet" ? "active" : ""}`}
+                  className=`nav-link ${activeTab === "tablet" ? "active" : ""}`
                   onClick={() => setActiveTab("tablet")}
                   type="button"
                   role="tab"
@@ -48,7 +49,7 @@ export default function VisitorManagementSystem() {
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${activeTab === "dashboard" ? "active" : ""}`}
+                  className=`nav-link ${activeTab === "dashboard" ? "active" : ""}`
                   onClick={() => setActiveTab("dashboard")}
                   type="button"
                   role="tab"
@@ -59,7 +60,7 @@ export default function VisitorManagementSystem() {
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${activeTab === "history" ? "active" : ""}`}
+                  className=`nav-link ${activeTab === "history" ? "active" : ""}`
                   onClick={() => setActiveTab("history")}
                   type="button"
                   role="tab"
@@ -71,14 +72,18 @@ export default function VisitorManagementSystem() {
             </ul>
 
             <div className="tab-content">
-              <div className={`tab-pane fade ${activeTab === "tablet" ? "show active" : ""}`}>
+              <div className=`tab-pane fade ${activeTab === "tablet" ? "show active" : ""}`
                 <TabletRegistration />
               </div>
-              <div className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`}>
+              <div className=`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`
                 <SecurityDashboard />
               </div>
-              <div className={`tab-pane fade ${activeTab === "history" ? "show active" : ""}`}>
-                <VisitorHistory />
+              <div className=`tab-pane fade ${activeTab === "history" ? "show active" : ""}`
+                <div className="row">
+                  <div className="col-12">
+                    <VisitorTable />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
