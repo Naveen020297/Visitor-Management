@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { VisitorPass } from "@/components/visitor-pass"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Printer, LogOut, User, Clock, Users, AlertCircle } from "lucide-react"
 
 interface Visitor {
@@ -59,6 +60,19 @@ export function SecurityDashboard() {
     },
   ])
 
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchVisitors = () => {
+      setIsLoading(true)
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
+    }
+
+    fetchVisitors()
+  }, [])
+
   const [showPassModal, setShowPassModal] = useState(false)
   const [selectedVisitor, setSelectedVisitor] = useState<Visitor | null>(null)
 
@@ -75,6 +89,39 @@ export function SecurityDashboard() {
 
   const checkedInCount = visitors.filter((v) => v.status === "checked-in").length
   const totalToday = visitors.length
+
+  if (isLoading) {
+    return (
+      <div className="security-dashboard">
+        {/* Loading Skeleton Stats Cards */}
+        <div className="row mb-4">
+          <div className="col-md-4 mb-3">
+            <Skeleton className="h-32 w-full" />
+          </div>
+          <div className="col-md-4 mb-3">
+            <Skeleton className="h-32 w-full" />
+          </div>
+          <div className="col-md-4 mb-3">
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+
+        {/* Loading Skeleton Visitor List */}
+        <div className="card">
+          <div className="card-header">
+            <Skeleton className="h-6 w-48" />
+          </div>
+          <div className="card-body">
+            <div className="visitor-list">
+              {[1, 2, 3, 4].map((item) => (
+                <Skeleton key={item} className="h-20 w-full mb-3" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="security-dashboard">

@@ -1,13 +1,101 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { TabletRegistration } from "@/components/tablet-registration"
 import { SecurityDashboard } from "@/components/security-dashboard"
 import { VisitorHistory } from "@/components/visitor-history"
 import { Shield, Tablet, History } from "lucide-react"
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
+import { Skeleton } from "@/components/ui/skeleton"
+
+// Simulated visitor data type
+interface Visitor {
+  id: string
+  name: string
+  photo: string
+  whomToMeet: string
+  timeOfEntry: string
+  status: "checked-in" | "checked-out"
+  purpose: string
+  mobile: string
+}
 
 export default function VisitorManagementSystem() {
   const [activeTab, setActiveTab] = useState("tablet")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [visitors, setVisitors] = useState<Visitor[]>([])
+
+  // Simulate data fetching when dashboard tab becomes active
+  useEffect(() => {
+    if (activeTab === "dashboard") {
+      setIsLoading(true)
+      setError(null)
+      
+      // Simulate API call with timeout
+      const fetchData = setTimeout(() => {
+        try {
+          // Simulated data fetch - in real app this would be an API call
+          const mockVisitors: Visitor[] = [
+            {
+              id: "1",
+              name: "John Smith",
+              photo: "/placeholder.svg?height=60&width=60",
+              whomToMeet: "Dr. Sarah Johnson",
+              timeOfEntry: "09:30 AM",
+              status: "checked-in",
+              purpose: "Academic Meeting",
+              mobile: "+1 234-567-8900",
+            },
+            {
+              id: "2",
+              name: "Emily Davis",
+              photo: "/placeholder.svg?height=60&width=60",
+              whomToMeet: "Prof. Michael Brown",
+              timeOfEntry: "10:15 AM",
+              status: "checked-in",
+              purpose: "Research Discussion",
+              mobile: "+1 234-567-8901",
+            },
+            {
+              id: "3",
+              name: "Robert Wilson",
+              photo: "/placeholder.svg?height=60&width=60",
+              whomToMeet: "Admin Office",
+              timeOfEntry: "08:45 AM",
+              status: "checked-out",
+              purpose: "Document Submission",
+              mobile: "+1 234-567-8902",
+            },
+            {
+              id: "4",
+              name: "Lisa Anderson",
+              photo: "/placeholder.svg?height=60&width=60",
+              whomToMeet: "Dr. James Miller",
+              timeOfEntry: "11:00 AM",
+              status: "checked-in",
+              purpose: "Consultation",
+              mobile: "+1 234-567-8903",
+            },
+          ]
+          setVisitors(mockVisitors)
+          setIsLoading(false)
+        } catch (err) {
+          setError("Failed to load visitor data. Please try again later.")
+          setIsLoading(false)
+        }
+      }, 1500)
+
+      return () => clearTimeout(fetchData)
+    }
+  }, [activeTab])
+
+  // Handle error retry
+  const handleRetry = () => {
+    setVisitors([])
+    setError(null)
+    setIsLoading(true)
+  }
 
   return (
     <div className="visitor-management-system">
@@ -71,13 +159,49 @@ export default function VisitorManagementSystem() {
             </ul>
 
             <div className="tab-content">
-              <div className={`tab-pane fade ${activeTab === "tablet" ? "show active" : ""}`}>
+              <div className={`tab-pane fade ${activeTab === "tablet" ? "show active" : ""}`}> 
                 <TabletRegistration />
               </div>
-              <div className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`}>
-                <SecurityDashboard />
+              <div className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`}> 
+                {isLoading ? (
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="card">
+                        <div className="card-header">
+                          <Skeleton className="h-6 w-64 mb-3" />
+                        </div>
+                        <div className="card-body">
+                          <div className="row mb-4">
+                            <div className="col-md-4 mb-3">
+                              <Skeleton className="h-20 w-full" />
+                            </div>
+                            <div className="col-md-4 mb-3">
+                              <Skeleton className="h-20 w-full" />
+                            </div>
+                            <div className="col-md-4 mb-3">
+                              <Skeleton className="h-20 w-full" />
+                            </div>
+                          </div>
+                          <Skeleton className="h-1 w-full" />
+                          <div className="mt-4">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full mt-2" />
+                            <Skeleton className="h-10 w-full mt-2" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : error ? (
+                  <Alert variant="destructive" className="m-4">
+                    <AlertTitle>Connection Error</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                ) : (
+                  <SecurityDashboard visitors={visitors} />
+                )}
               </div>
-              <div className={`tab-pane fade ${activeTab === "history" ? "show active" : ""}`}>
+              <div className={`tab-pane fade ${activeTab === "history" ? "show active" : ""}`}> 
                 <VisitorHistory />
               </div>
             </div>
