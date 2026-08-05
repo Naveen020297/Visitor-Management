@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Search, Download, User, Calendar } from "lucide-react"
+import { Search, Download, User, Calendar, Phone } from "lucide-react"
+import { maskPhoneNumber } from "@/lib/utils"
 
 interface HistoryEntry {
   id: string
@@ -13,6 +14,7 @@ interface HistoryEntry {
   status: "checked-in" | "checked-out"
   purpose: string
   date: string
+  mobile: string
 }
 
 export function VisitorHistory() {
@@ -29,6 +31,7 @@ export function VisitorHistory() {
       status: "checked-out",
       purpose: "Academic Meeting",
       date: "Today",
+      mobile: "+1 234-567-8900",
     },
     {
       id: "2",
@@ -40,6 +43,7 @@ export function VisitorHistory() {
       status: "checked-in",
       purpose: "Research Discussion",
       date: "Today",
+      mobile: "+1 234-567-8901",
     },
     {
       id: "3",
@@ -51,6 +55,7 @@ export function VisitorHistory() {
       status: "checked-out",
       purpose: "Document Submission",
       date: "Today",
+      mobile: "+1 234-567-8902",
     },
     {
       id: "4",
@@ -62,6 +67,7 @@ export function VisitorHistory() {
       status: "checked-in",
       purpose: "Consultation",
       date: "Today",
+      mobile: "+1 234-567-8903",
     },
     {
       id: "5",
@@ -73,6 +79,7 @@ export function VisitorHistory() {
       status: "checked-out",
       purpose: "Student Interview",
       date: "Yesterday",
+      mobile: "+1 234-567-8904",
     },
     {
       id: "6",
@@ -84,6 +91,7 @@ export function VisitorHistory() {
       status: "checked-out",
       purpose: "Research Collaboration",
       date: "Yesterday",
+      mobile: "+1 234-567-8905",
     },
   ]
 
@@ -142,7 +150,7 @@ export function VisitorHistory() {
                   <th className="border-0">Guest</th>
                   <th className="border-0">Entry Time</th>
                   <th className="border-0">Exit Time</th>
-                  <th className="border-0">Invited By</th>
+                  <th className="border-0">Contact</th>
                   <th className="border-0">Status</th>
                   <th className="border-0">Date</th>
                 </tr>
@@ -163,7 +171,12 @@ export function VisitorHistory() {
                     </td>
                     <td className="history-time">{entry.entryTime}</td>
                     <td className="history-time">{entry.exitTime || <span className="text-muted">—</span>}</td>
-                    <td className="history-invited">{entry.invitedBy}</td>
+                    <td>
+                      <div className="d-flex align-items-center">
+                        <Phone className="avatar-icon me-2 text-muted" />
+                        <span className="history-invited">{maskPhoneNumber(entry.mobile)}</span>
+                      </div>
+                    </td>
                     <td>
                       <span className={`badge ${entry.status === "checked-in" ? "badge-primary" : "badge-secondary"}`}>
                         {entry.status === "checked-in" ? "Checked In" : "Checked Out"}

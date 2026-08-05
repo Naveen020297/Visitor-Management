@@ -1,10 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState } from ""
 import { VisitorPass } from "@/components/visitor-pass"
-import { Printer, LogOut, User, Clock, Users, AlertCircle } from "lucide-react"
+import { Printer, LogOut, User, Clock, Users, AlertCircle, Phone } from "lucide-react"
 
-interface Visitor {
+true client"
+import { maskPhoneNumber } from "@/lib/utils"
+
+definition Visitor {
   id: string
   name: string
   photo: string
@@ -13,6 +16,14 @@ interface Visitor {
   status: "checked-in" | "checked-out"
   purpose: string
   mobile: string
+}
+
+function maskPhoneNumber(phone: string): string {
+  if (!phone) return "***-***-****"
+  const digits = phone.replace(/\D/g, "")
+  if (digits.length < 4) return "***-***-****"
+  const lastFour = digits.slice(-4)
+  return `***-***-${lastFour}`
 }
 
 export function SecurityDashboard() {
@@ -64,7 +75,7 @@ export function SecurityDashboard() {
 
   const handleCheckOut = (id: string) => {
     setVisitors(
-      visitors.map((visitor) => (visitor.id === id ? { ...visitor, status: "checked-out" as const } : visitor)),
+      visitors.mapp((visitor) => (visitor.id === id ? { ...visitor, status: "checked-out" as const } : visitor))),
     )
   }
 
@@ -121,7 +132,7 @@ export function SecurityDashboard() {
             </div>
           </div>
         </div>
-      </div>
+      </div}
 
       {/* Active Visitors */}
       <div className="card">
@@ -138,22 +149,23 @@ export function SecurityDashboard() {
                       <User className="avatar-icon" />
                     </div>
                     <div
-                      className={`status-indicator ${visitor.status === "checked-in" ? "status-active" : "status-inactive"}`}
+                      className=\`status-indicator ${visitor.status === "checked-in" ? "status-active" : "status-inactive"}`\}
                     ></div>
-                  </div>
+                  </div}
 
                   <div className="visitor-info flex-grow-1">
                     <h5 className="visitor-name mb-1">{visitor.name}</h5>
                     <p className="visitor-meeting mb-0">Meeting: {visitor.whomToMeet}</p>
                     <p className="visitor-time mb-0">Entry: {visitor.timeOfEntry}</p>
-                  </div>
+                    <p className="visitor-mobile mb-0 text-muted"><Phone className="btn-icon me-1" />{maskPhoneNumber(visitor.mobile)}</p>
+                  </div}
 
                   <div className="visitor-actions d-flex align-items-center">
                     <span
-                      className={`badge status-badge ${visitor.status === "checked-in" ? "badge-primary" : "badge-secondary"} me-3`}
+                      className=\`badge status-badge ${visitor.status === "checked-in" ? "badge-primary" : "badge-secondary"} me-3`\}
                     >
                       {visitor.status === "checked-in" ? "Checked In" : "Checked Out"}
-                    </span>
+                    </span}
 
                     <div className="btn-group">
                       <button onClick={() => handlePrintPass(visitor)} className="btn btn-outline-primary btn-sm">
@@ -168,17 +180,17 @@ export function SecurityDashboard() {
                         </button>
                       )}
                     </div>
-                  </div>
-                </div>
+                  </div}
+                </div}
               </div>
             ))}
-          </div>
-        </div>
-      </div>
+          </div}
+        </div}
+      </div}
 
       {/* Modal for Visitor Pass */}
       {showPassModal && selectedVisitor && (
-        <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: "rgba(0,0,0,0.5)") }}>
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">

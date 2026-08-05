@@ -2,6 +2,15 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+// Phone number masking utility for table cells
+const maskPhoneNumber = (phone: string | number): string => {
+  if (!phone) return ""
+  const phoneStr = phone.toString().replace(/[^\d]/g, "")
+  if (phoneStr.length < 4) return phone.toString()
+  const lastFour = phoneStr.slice(-4)
+  return `***-***-${lastFour}`
+}
+
 const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
@@ -20,7 +29,7 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
+  <thead ref={ref} className={cn("([&_tr]:border-b", className)} {...props} />
 ))
 TableHeader.displayName = "TableHeader"
 
@@ -30,7 +39,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={cn("[&_tr:last-child]:border-0", className)}
+    className={cn("([&_tr:last-child]:border-0", className)}
     {...props}
   />
 ))
@@ -81,16 +90,25 @@ const TableHead = React.forwardRef<
 ))
 TableHead.displayName = "TableHead"
 
-const TableCell = React.forwardRef<
-  HTMLTableCellElement,
-  React.TdHTMLAttributes<HTMLTableCellElement>
->(({ className, ...props }, ref) => (
-  <td
-    ref={ref}
-    className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
-    {...props}
-  />
-))
+interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  phone?: string | number
+}
+
+const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
+  ({ className, phone, ...props }, ref) => {
+    const displayContent = phone !== undefined ? maskPhoneNumber(phone) : undefined
+    return (
+      <td
+        ref={ref}
+        className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
+        {...(displayContent !== undefined ? { "data-display": displayContent } : {})}
+        {...props}
+      >
+        {displayContent !== undefined ? displayContent : props.children}
+      </td>
+    )
+  }
+)
 TableCell.displayName = "TableCell"
 
 const TableCaption = React.forwardRef<
