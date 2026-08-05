@@ -1,0 +1,6 @@
+# Unit tests for SCRUM-618
+from src.services.task006_create_rolebasedcardrenderer_component_for_permissionaware_rendering_service import execute_task006_create_rolebasedcardrenderer_component_for_permissionaware_rendering
+
+def test_execute_task006_create_rolebasedcardrenderer_component_for_permissionaware_rendering():
+    res = execute_task006_create_rolebasedcardrenderer_component_for_permissionaware_rendering()
+    assert res['status'] == 'success'
