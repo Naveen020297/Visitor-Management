@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { VisitorPass } from "@/components/visitor-pass"
+import { UserTable } from "@/components/user-table"
 import { Printer, LogOut, User, Clock, Users, AlertCircle } from "lucide-react"
 
 interface Visitor {
@@ -13,6 +14,13 @@ interface Visitor {
   status: "checked-in" | "checked-out"
   purpose: string
   mobile: string
+}
+
+interface UserTableData {
+  id: string
+  name: string
+  phone: string
+  lastVisitTime: string
 }
 
 export function SecurityDashboard() {
@@ -75,6 +83,13 @@ export function SecurityDashboard() {
 
   const checkedInCount = visitors.filter((v) => v.status === "checked-in").length
   const totalToday = visitors.length
+
+  const userTableData: UserTableData[] = visitors.map((visitor) => ({
+    id: visitor.id,
+    name: visitor.name,
+    phone: visitor.mobile,
+    lastVisitTime: visitor.timeOfEntry,
+  }))
 
   return (
     <div className="security-dashboard">
@@ -173,6 +188,16 @@ export function SecurityDashboard() {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* User Table */}
+      <div className="card mt-4">
+        <div className="card-header">
+          <h3 className="card-title mb-0">User Directory</h3>
+        </div>
+        <div className="card-body">
+          <UserTable users={userTableData} />
         </div>
       </div>
 
