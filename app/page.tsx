@@ -1,10 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { TabletRegistration } from "@/components/tablet-registration"
 import { SecurityDashboard } from "@/components/security-dashboard"
 import { VisitorHistory } from "@/components/visitor-history"
-import { Shield, Tablet, History } from "lucide-react"
+import { Shield, Tablet, History, LayoutDashboard } from "lucide-react"
 
 export default function VisitorManagementSystem() {
   const [activeTab, setActiveTab] = useState("tablet")
@@ -24,6 +25,10 @@ export default function VisitorManagementSystem() {
               </div>
             </div>
             <div className="d-flex align-items-center">
+              <Link href="/dashboard" className="btn btn-outline-primary btn-sm me-3 d-none d-md-inline-flex">
+                <LayoutDashboard className="nav-icon me-1" />
+                Dashboard
+              </Link>
               <div className="admin-avatar me-2"></div>
               <span className="admin-name">Security Admin</span>
             </div>
@@ -37,7 +42,7 @@ export default function VisitorManagementSystem() {
             <ul className="nav nav-pills nav-fill custom-nav mb-4" role="tablist">
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${activeTab === "tablet" ? "active" : ""}`}
+                  className={`nav-link ${activeTab === "tablet" ? "active" : ""}`
                   onClick={() => setActiveTab("tablet")}
                   type="button"
                   role="tab"
@@ -48,7 +53,7 @@ export default function VisitorManagementSystem() {
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${activeTab === "dashboard" ? "active" : ""}`}
+                  className={`nav-link ${activeTab === "dashboard" ? "active" : ""}`
                   onClick={() => setActiveTab("dashboard")}
                   type="button"
                   role="tab"
@@ -59,7 +64,7 @@ export default function VisitorManagementSystem() {
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${activeTab === "history" ? "active" : ""}`}
+                  className={`nav-link ${activeTab === "history" ? "active" : ""}`
                   onClick={() => setActiveTab("history")}
                   type="button"
                   role="tab"

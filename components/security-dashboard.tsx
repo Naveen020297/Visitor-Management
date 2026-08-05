@@ -2,7 +2,16 @@
 
 import { useState } from "react"
 import { VisitorPass } from "@/components/visitor-pass"
-import { Printer, LogOut, User, Clock, Users, AlertCircle } from "lucide-react"
+import { Printer, LogOut, User, Clock, Users, AlertCircle } from "lucide"
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table"
+import { Pagination } from "@/components/ui/pagination"
 
 interface Visitor {
   id: string
@@ -13,6 +22,12 @@ interface Visitor {
   status: "checked-in" | "checked-out"
   purpose: string
   mobile: string
+}
+
+type PaginationProps = {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
 }
 
 export function SecurityDashboard() {
@@ -61,6 +76,22 @@ export function SecurityDashboard() {
 
   const [showPassModal, setShowPassModal] = useState(false)
   const [selectedVisitor, setSelectedVisitor] = useState<Visitor | null>(null)
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 5
+
+  // Get checked-in visitors for the table
+  const checkedInVisitors = visitors.filter((v) => v.status === "checked-in")
+
+  // Calculate pagination
+  const totalPages = Math.ceil(checkedInVisitors.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const paginatedVisitors = checkedInVisitors.slice(startIndex, startIndex + itemsPerPage)
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+  }
 
   const handleCheckOut = (id: string) => {
     setVisitors(
@@ -120,6 +151,104 @@ export function SecurityDashboard() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* User Table - Name, Phone, Last Visit */}
+      <div className="card mb-4">
+        <div className="card-header">
+          <h3 className="card-title mb-0">Visitor Directory</h3>
+        </div>
+        <div className="card-body">
+          <div className="table-responsive">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-start">Name</TableHead>
+                  <TableHead className="text-start">Phone</TableHead>
+                  <TableHead className="text-start">Last Visit</TableHead>
+                  <TableHead className="text-center">Status</TableHead>
+                  <TableHead className="text-end">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginatedVisitors.map((visitor) => (
+                  <TableRow key={visitor.id} className="hover:bg-muted/50">
+                    <TableCell className="font-medium text-start">
+                      <div className="d-flex align-items-center">
+                        <div className="visitor-avatar-container me-2">
+                          <div className="visitor-avatar">
+                            <User className="avatar-icon" />
+                          </div>
+                        </div>
+                        {visitor.name}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-start">
+                      <span className="text-muted-foreground">{visitor.mobile}</span>
+                    </TableCell>
+                    <TableCell className="text-start">
+                      <span className="text-muted-foreground">{visitor.timeOfEntry}</span>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <span className="badge badge-primary">{visitor.status === "checked-in" ? "On Campus" : "Departed"}</span>
+                    </TableCell>
+                    <TableCell className="text-end">
+                      <button
+                        onClick={() => handlePrintPass(visitor)}
+                        className="btn btn-outline-primary btn-sm"
+                      >
+                        <Printer className="btn-icon me-1" />
+                        Print Pass
+                      </button>
+                      {visitor.status === "checked-in" && (
+                        <button
+                          onClick={() => handleCheckOut(visitor.id)}
+                          className="btn btn-outline-secondary btn-sm ms-2"
+                        >
+                          <LogOut className="btn-icon me-1" />
+                          Check Out
+                        </button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <nav aria-label="Visitor pagination" className="mt-4">
+              <ul className="pagination justify-content-center mb-0">
+                <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>                  <button
+                    className="page-link"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </button>
+                </li>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>                    <button
+                      className="page-link"
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </button>
+                  </li>
+                ))}
+                <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>                  <button
+                    className="page-link"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          )}
         </div>
       </div>
 
